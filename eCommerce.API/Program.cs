@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Add Services
+#region Add Services
 builder.Services.AddInfrastructure();
 builder.Services.AddCore();
 
@@ -22,19 +22,38 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddFluentValidationAutoValidation();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(); 
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+#endregion
+
 //Build the Web App 
 var app = builder.Build();
 
+#region Add Middlewares
 app.UseExceptionHandlingMiddleware();
 
 //Routing
 app.UseRouting();
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseCors();
 
 //Auth
 app.UseAuthentication();
 app.UseAuthorization();
 
 //Controller Routes
-app.MapControllers();
+app.MapControllers(); 
+#endregion
 
 app.Run();
