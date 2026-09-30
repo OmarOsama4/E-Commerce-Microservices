@@ -1,6 +1,8 @@
 ﻿using BusinessLogicLayer.Mappers;
 using BusinessLogicLayer.ServiceContract;
 using BusinessLogicLayer.ServiceImplementation;
+using BusinessLogicLayer.Validatos;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BusinessLogicLayer;
@@ -13,6 +15,7 @@ public static class DependencyInjection
             cfg.AddMaps(typeof(ProductToProductResponse).Assembly);
         });
         services.AddScoped<IProductService, ProductService>();
+        services.AddValidatorsFromAssemblyContaining<ProductAddRequestValidator>();
         return services;
     }
 }
