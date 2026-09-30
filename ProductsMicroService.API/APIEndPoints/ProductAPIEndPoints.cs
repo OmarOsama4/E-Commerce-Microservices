@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.DTO;
 using BusinessLogicLayer.ServiceContract;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProductsMicroService.API.APIEndPoints;
 public static class ProductAPIEndPoints
@@ -20,16 +21,18 @@ public static class ProductAPIEndPoints
             return Results.Ok(product);
         });
 
-        //Get Products By Condition Endpoint
-        app.MapGet("/api/products/search/{searchstring}", async (IProductService productService, string searchstring) => 
+        app.MapGet("/api/products/search/{searchstring}", async (IProductService productService,string searchstring) =>
         {
-            var productsByName = await productService.GetProductsByConditionAsync(p => p.ProductName != null &&
-                                                        p.ProductName.Contains(searchstring, StringComparison.OrdinalIgnoreCase));
+            var productsByName = await productService.GetProductsByConditionAsync(
+                p => p.ProductName != null &&
+                     EF.Functions.Like(p.ProductName, $"%{searchstring}%"));
 
-            var productsByCategory = await productService.GetProductsByConditionAsync(p => p.Category != null &&
-                                                        p.ProductName.Contains(searchstring, StringComparison.OrdinalIgnoreCase));
+            var productsByCategory = await productService.GetProductsByConditionAsync(
+                p => p.Category != null &&
+                     EF.Functions.Like(p.Category, $"%{searchstring}%"));
 
             var products = productsByName.Union(productsByCategory);
+
             return Results.Ok(products);
         });
 
