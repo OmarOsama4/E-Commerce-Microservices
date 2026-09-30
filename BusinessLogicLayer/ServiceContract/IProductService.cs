@@ -9,6 +9,6 @@ public interface IProductService
     Task<List<ProductResponseDTO?>> GetProductsByConditionAsync(Expression<Func<Product, bool>> condition);
     Task<ProductResponseDTO?> GetProductByConditionAsync(Expression<Func<Product, bool>> condition);
     Task<ProductResponseDTO?> AddProductAsync(ProductAddRequestDTO productAddRequest);
-    Task<ProductResponseDTO?> UpdateProductAsync(ProductAddRequestDTO productAddRequest);
+    Task<ProductResponseDTO?> UpdateProductAsync(ProductUpdateRequestDTO productUpdateRequest);
     Task<bool> DeleteProductAsync(Guid productId);
 }

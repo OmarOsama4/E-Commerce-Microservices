@@ -34,28 +34,46 @@ public class ProductService(IProductRepository productRepository,
         return mapper.Map<ProductResponseDTO>(product);
     }
 
-    public Task<bool> DeleteProductAsync(Guid productId)
+    public async Task<bool> DeleteProductAsync(Guid productId)
     {
-        throw new NotImplementedException();
+        return await productRepository.DeleteProduct(productId);
     }
 
-    public Task<ProductResponseDTO?> GetProductByConditionAsync(Expression<Func<Product, bool>> condition)
+    public async Task<ProductResponseDTO?> GetProductByConditionAsync(Expression<Func<Product, bool>> condition)
     {
-        throw new NotImplementedException();
+        var product = await productRepository.GetProductByCondition(condition);
+        if (product == null)
+            return null;
+
+        return mapper.Map<ProductResponseDTO>(product);
     }
 
-    public Task<List<ProductResponseDTO?>> GetProductsAsync()
+    public async Task<List<ProductResponseDTO?>> GetProductsAsync()
     {
-        throw new NotImplementedException();
+        var products = await productRepository.GetProductsAsync();
+        return mapper.Map<List<ProductResponseDTO?>>(products);
     }
 
-    public Task<List<ProductResponseDTO?>> GetProductsByConditionAsync(Expression<Func<Product, bool>> condition)
+    public async Task<List<ProductResponseDTO?>> GetProductsByConditionAsync(Expression<Func<Product, bool>> condition)
     {
-        throw new NotImplementedException();
+        var products = await productRepository.GetProductsByCondition(condition);
+        return mapper.Map<List<ProductResponseDTO?>>(products);
     }
 
-    public Task<ProductResponseDTO?> UpdateProductAsync(ProductAddRequestDTO productAddRequest)
+    public async Task<ProductResponseDTO?> UpdateProductAsync(ProductUpdateRequestDTO productUpdateRequest)
     {
-        throw new NotImplementedException();
+        if (productUpdateRequest == null)
+        {
+            throw new ArgumentNullException(nameof(productUpdateRequest));
+        }
+        var validationResult = await productUpdateRequestValidator.ValidateAsync(productUpdateRequest);
+        if (!validationResult.IsValid)
+        {
+            var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+            throw new ArgumentException(errors);
+        }
+        var product = await productRepository.UpdateProduct(mapper.Map<Product>(productUpdateRequest));
+
+        return product == null ? null : mapper.Map<ProductResponseDTO>(product);
     }
 }
