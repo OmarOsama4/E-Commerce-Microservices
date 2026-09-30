@@ -1,4 +1,6 @@
 ﻿using BusinessLogicLayer.Mappers;
+using BusinessLogicLayer.ServiceContract;
+using BusinessLogicLayer.ServiceImplementation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BusinessLogicLayer;
@@ -10,7 +12,7 @@ public static class DependencyInjection
         {
             cfg.AddMaps(typeof(ProductToProductResponse).Assembly);
         });
-
+        services.AddScoped<IProductService, ProductService>();
         return services;
     }
 }
