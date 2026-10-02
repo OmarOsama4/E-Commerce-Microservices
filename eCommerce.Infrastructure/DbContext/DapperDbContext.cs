@@ -8,7 +8,11 @@ public class DapperDbContext
     private readonly IDbConnection connection;
     public DapperDbContext(IConfiguration configuration)
     {
-        string? connectionString = configuration.GetConnectionString("PostgresConnection") ?? throw new InvalidOperationException("No Connection string found");
+        string? connectionStringTemplate = configuration.GetConnectionString("PostgresConnection")!;
+        string connectionString = connectionStringTemplate
+            .Replace("$POSTGRES_HOST", Environment.GetEnvironmentVariable("POSTGRES_HOST"))
+            .Replace("$POSTGRES_PASSWORD", Environment.GetEnvironmentVariable("POSTGRES_PASSWORD"));
+
         connection =  new NpgsqlConnection(connectionString);
     }
 
