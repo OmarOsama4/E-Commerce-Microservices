@@ -54,24 +54,29 @@ public class OrdersService(IOrdersRepository ordersRepository,
         return mapper.Map<OrderResponseDTO>(addedOrder);
     }
 
-    public Task<bool> DeleteOrderAsync(Guid OrderID)
+    public async Task<bool> DeleteOrderAsync(Guid OrderID)
     {
-        throw new NotImplementedException();
+        return await ordersRepository.DeleteOrder(OrderID);
     }
 
-    public Task<OrderResponseDTO?> GetOrderByConditionAsync(FilterDefinition<Order> filter)
+    public async Task<OrderResponseDTO?> GetOrderByConditionAsync(FilterDefinition<Order> filter)
     {
-        throw new NotImplementedException();
+        var order = await ordersRepository.GetOrderByCondition(filter);
+        if (order == null)
+            return null;
+        return mapper.Map<OrderResponseDTO>(order);
     }
 
-    public Task<List<OrderResponseDTO?>> GetOrdersAsync()
+    public async Task<List<OrderResponseDTO?>> GetOrdersAsync()
     {
-        throw new NotImplementedException();
+        var orders = await ordersRepository.GetOrders();
+        return mapper.Map<List<OrderResponseDTO?>>(orders);
     }
 
-    public Task<List<OrderResponseDTO?>> GetOrdersByConditionAsync(FilterDefinition<Order> filter)
+    public async Task<List<OrderResponseDTO?>> GetOrdersByConditionAsync(FilterDefinition<Order> filter)
     {
-        throw new NotImplementedException();
+        var orders = await ordersRepository.GetOrdersByCondition(filter);
+        return mapper.Map<List<OrderResponseDTO?>>(orders);
     }
 
     public async Task<OrderResponseDTO?> UpdateOrderAsync(OrderUpdateRequestDTO orderUpdateRequest)
