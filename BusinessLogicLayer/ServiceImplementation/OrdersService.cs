@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.Contract;
 using BusinessLogicLayer.DTO;
+using BusinessLogicLayer.HttpClients;
 using DataAccessLayer.Contracts;
 using DataAccessLayer.Entities;
 using FluentValidation;
@@ -12,7 +13,8 @@ public class OrdersService(IOrdersRepository ordersRepository,
     IValidator<OrderAddRequestDTO> orderAddRequestValidator, 
     IValidator<OrderItemAddRequestDTO> orderItemAddRequestValidator,
     IValidator<OrderItemUpdateRequestDTO> orderItemUpdateRequestValidator,
-    IValidator<OrderUpdateRequestDTO> orderUpdateRequestValidator) : IOrdersService
+    IValidator<OrderUpdateRequestDTO> orderUpdateRequestValidator,
+    UsersMicroserviceClient usersMicroserviceClient) : IOrdersService
 {
     public async Task<OrderResponseDTO?> AddOrderAsync(OrderAddRequestDTO orderAddRequest)
     {
@@ -35,9 +37,13 @@ public class OrdersService(IOrdersRepository ordersRepository,
                 throw new ArgumentException(errorMessages);
             }
         }
-        //TODO: Check if the user exists in the database before proceeding with the order creation.
+        var user = await usersMicroserviceClient.GetUserByUserId(orderAddRequest.UserID);
+        if (user == null)
+        {
+            throw new ArgumentException($"User with ID {orderAddRequest.UserID} does not exist.");
+        }
         #endregion
-        
+
         var order = mapper.Map<Order>(orderAddRequest);
 
         #region Calculate the total bill of the order
@@ -100,7 +106,11 @@ public class OrdersService(IOrdersRepository ordersRepository,
                 throw new ArgumentException(errorMessages);
             }
         }
-        //TODO: Check if the user exists in the database before proceeding with the order creation.
+        var user = await usersMicroserviceClient.GetUserByUserId(orderUpdateRequest.UserID);
+        if (user == null)
+        {
+            throw new ArgumentException($"User with ID {orderUpdateRequest.UserID} does not exist.");
+        }
         #endregion
 
         var order = mapper.Map<Order>(orderUpdateRequest);
