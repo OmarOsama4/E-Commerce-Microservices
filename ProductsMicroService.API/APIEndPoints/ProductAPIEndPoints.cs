@@ -18,6 +18,10 @@ public static class ProductAPIEndPoints
         app.MapGet("/api/products/search/product-id/{ProductID:guid}", async (IProductService productService, Guid ProductID) =>
         {
             var product = await productService.GetProductByConditionAsync(p => p.ProductID == ProductID);
+            if (product == null)
+            {
+                return Results.NotFound($"Product with ID {ProductID} not found.");
+            }
             return Results.Ok(product);
         });
 
