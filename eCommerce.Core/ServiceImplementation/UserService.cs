@@ -8,6 +8,12 @@ namespace eCommerce.Core.ServiceImplementation;
 internal class UserService(IUserRepository userRepository,
     IMapper mapper) : IUserService
 {
+    public async Task<UserDTO?> GetUserByUserId(Guid userId)
+    {
+        var user = await userRepository.GetUserByUserId(userId);
+        return mapper.Map<UserDTO>(user);
+    }
+
     public async Task<AuthenticationResponseDTO?> Login(LoginRequestDTO loginRequest)
     {
         var user = await userRepository.GetUserByEmailAndPassword(loginRequest.Email, loginRequest.Password);
