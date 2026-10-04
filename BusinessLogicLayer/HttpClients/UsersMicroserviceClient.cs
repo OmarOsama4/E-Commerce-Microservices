@@ -6,7 +6,7 @@ public class UsersMicroserviceClient(HttpClient httpClient)
 {
     public async Task<UserDTO?> GetUserByUserId(Guid userId)
     {
-        var response = await httpClient.GetAsync($"api/users/{userId}");
+        var response = await httpClient.GetAsync($"/api/users/{userId}");
         if (!response.IsSuccessStatusCode)
         {
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
