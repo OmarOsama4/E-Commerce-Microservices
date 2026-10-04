@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddBusinessLogicLayer();
 builder.Services.AddDataAccessLayer(builder.Configuration);
 builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddControllers();
 #endregion
 
 var app = builder.Build();
