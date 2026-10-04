@@ -1,4 +1,5 @@
 using BusinessLogicLayer;
+using BusinessLogicLayer.HttpClients;
 using DataAccessLayer;
 using FluentValidation.AspNetCore;
 using OrdersMicroService.API.Middlewares;
@@ -10,6 +11,13 @@ builder.Services.AddBusinessLogicLayer();
 builder.Services.AddDataAccessLayer(builder.Configuration);
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddControllers();
+
+builder.Services.AddHttpClient<UsersMicroserviceClient>(client =>
+{
+    client.BaseAddress = new Uri($"http://{builder.Configuration["UsersMicroserviceName"]}:" +
+        $"{builder.Configuration["UsersMicroservicePort"]}");
+});
+
 #endregion
 
 var app = builder.Build();
