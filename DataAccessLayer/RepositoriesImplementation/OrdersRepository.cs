@@ -51,11 +51,18 @@ public class OrdersRepository : IOrdersRepository
 
     public async Task<Order?> UpdateOrder(Order order)
     {
-        FilterDefinition<Order> filter = Builders<Order>.Filter.Eq(o => o.OrderID, order.OrderID);
-        return await _ordersCollection.FindOneAndReplaceAsync(filter, order, 
-            new FindOneAndReplaceOptions<Order>
-            {
-                ReturnDocument = ReturnDocument.After
-            });
+        FilterDefinition<Order> filter = Builders<Order>.Filter.Eq(temp => temp.OrderID, order.OrderID);
+
+        Order? existingOrder = (await _ordersCollection.FindAsync(filter)).FirstOrDefault();
+
+        if (existingOrder == null)
+        {
+            return null;
+        }
+        order._id = existingOrder._id;
+
+        ReplaceOneResult replaceOneResult = await _ordersCollection.ReplaceOneAsync(filter, order);
+
+        return order;
     }
 }

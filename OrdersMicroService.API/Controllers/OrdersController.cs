@@ -57,7 +57,7 @@ public class ordersController(IOrdersService ordersService) : ControllerBase
         return Ok(order);
     }
 
-    [HttpDelete]
+    [HttpDelete("{orderID}")]
     public async Task<IActionResult> DeleteOrder(Guid orderID)
     {
         var result = await ordersService.DeleteOrderAsync(orderID);
