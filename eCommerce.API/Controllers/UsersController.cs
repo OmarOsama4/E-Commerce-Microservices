@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace eCommerce.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(IUserService userService) : ControllerBase
+public class UsersController(IUserService userService) : ControllerBase
 {
     [HttpGet("{userId:guid}")]
     public async Task<IActionResult> GetUserByUserId(Guid userId)
