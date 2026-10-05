@@ -6,7 +6,7 @@ public class ProductsMicroserviceClient(HttpClient httpClient)
 {
     public async Task<ProductDTO?> GetProductByIdAsync(Guid productID)
     {
-        var response = await httpClient.GetAsync($"/api/products/search/productid/{productID}");
+        var response = await httpClient.GetAsync($"/api/products/search/product-id/{productID}");
         if (!response.IsSuccessStatusCode)
         {
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
