@@ -14,7 +14,8 @@ public class OrdersService(IOrdersRepository ordersRepository,
     IValidator<OrderItemAddRequestDTO> orderItemAddRequestValidator,
     IValidator<OrderItemUpdateRequestDTO> orderItemUpdateRequestValidator,
     IValidator<OrderUpdateRequestDTO> orderUpdateRequestValidator,
-    UsersMicroserviceClient usersMicroserviceClient) : IOrdersService
+    UsersMicroserviceClient usersMicroserviceClient,
+    ProductsMicroserviceClient productsMicroserviceClient) : IOrdersService
 {
     public async Task<OrderResponseDTO?> AddOrderAsync(OrderAddRequestDTO orderAddRequest)
     {
@@ -35,6 +36,11 @@ public class OrdersService(IOrdersRepository ordersRepository,
             {
                 string errorMessages = string.Join("\n ", itemValidationResult.Errors.Select(e => e.ErrorMessage));
                 throw new ArgumentException(errorMessages);
+            }
+            var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductID);
+            if (product == null)
+            {
+                throw new ArgumentException($"Product with ID {orderItem.ProductID} does not exist.");
             }
         }
         var user = await usersMicroserviceClient.GetUserByUserId(orderAddRequest.UserID);
@@ -104,6 +110,11 @@ public class OrdersService(IOrdersRepository ordersRepository,
             {
                 string errorMessages = string.Join("\n ", itemValidationResult.Errors.Select(e => e.ErrorMessage));
                 throw new ArgumentException(errorMessages);
+            }
+            var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductID);
+            if (product == null)
+            {
+                throw new ArgumentException($"Product with ID {orderItem.ProductID} does not exist.");
             }
         }
         var user = await usersMicroserviceClient.GetUserByUserId(orderUpdateRequest.UserID);
