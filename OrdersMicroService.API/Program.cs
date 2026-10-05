@@ -18,6 +18,12 @@ builder.Services.AddHttpClient<UsersMicroserviceClient>(client =>
         $"{builder.Configuration["UsersMicroservicePort"]}");
 });
 
+builder.Services.AddHttpClient<ProductsMicroserviceClient>(client =>
+{
+    client.BaseAddress = new Uri($"http://{builder.Configuration["ProductsMicroserviceName"]}:" +
+        $"{builder.Configuration["ProductsMicroservicePort"]}");
+});
+
 #endregion
 
 var app = builder.Build();
