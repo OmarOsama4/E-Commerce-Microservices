@@ -22,6 +22,8 @@ public class OrdersService(IOrdersRepository ordersRepository,
         if (orderAddRequest == null)
             throw new ArgumentNullException(nameof(orderAddRequest));
 
+        List<ProductDTO?> products = new List<ProductDTO?>();
+
         #region Validate orderAddRequest and its orderItems
         var validationResult = await orderAddRequestValidator.ValidateAsync(orderAddRequest);
         if (!validationResult.IsValid)
@@ -42,6 +44,7 @@ public class OrdersService(IOrdersRepository ordersRepository,
             {
                 throw new ArgumentException($"Product with ID {orderItem.ProductID} does not exist.");
             }
+            products.Add(product);
         }
         var user = await usersMicroserviceClient.GetUserByUserId(orderAddRequest.UserID);
         if (user == null)
@@ -63,7 +66,21 @@ public class OrdersService(IOrdersRepository ordersRepository,
         var addedOrder = await ordersRepository.AddOrder(order);
         if (addedOrder == null)
             return null;
-        return mapper.Map<OrderResponseDTO>(addedOrder);
+
+        var addedOrderResponse = mapper.Map<OrderResponseDTO>(addedOrder);
+        if (addedOrderResponse != null)
+        {
+            foreach (var orderItemResponse in addedOrderResponse.OrderItems)
+            {
+                ProductDTO? productDTO = products.Where(temp => temp.ProductID == orderItemResponse.ProductID).FirstOrDefault();
+
+                if (productDTO == null)
+                    continue;
+
+                mapper.Map<ProductDTO, OrderItemResponseDTO>(productDTO, orderItemResponse);
+            }
+        }
+        return addedOrderResponse;
     }
 
     public async Task<bool> DeleteOrderAsync(Guid OrderID)
@@ -76,25 +93,67 @@ public class OrdersService(IOrdersRepository ordersRepository,
         var order = await ordersRepository.GetOrderByCondition(filter);
         if (order == null)
             return null;
-        return mapper.Map<OrderResponseDTO>(order);
+        var responseOrder = mapper.Map<OrderResponseDTO?>(order);
+
+        if (responseOrder != null)
+        {
+            foreach (var orderItem in responseOrder.OrderItems)
+            {
+                var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductID);
+                if (product == null)
+                    continue;
+
+                mapper.Map<ProductDTO, OrderItemResponseDTO>(product, orderItem);
+            }
+        }
+        return responseOrder;
     }
 
     public async Task<List<OrderResponseDTO?>> GetOrdersAsync()
     {
         var orders = await ordersRepository.GetOrders();
-        return mapper.Map<List<OrderResponseDTO?>>(orders);
+        var responseOrders = mapper.Map<List<OrderResponseDTO?>>(orders);
+        foreach (var responseOrder in responseOrders)
+        {
+            if (responseOrder == null)
+                continue;
+            foreach (var orderItem in responseOrder.OrderItems)
+            {
+                var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductID);
+                if (product == null)
+                    continue;
+
+                mapper.Map<ProductDTO, OrderItemResponseDTO>(product, orderItem);
+            }
+        }
+        return responseOrders;
     }
 
     public async Task<List<OrderResponseDTO?>> GetOrdersByConditionAsync(FilterDefinition<Order> filter)
     {
         var orders = await ordersRepository.GetOrdersByCondition(filter);
-        return mapper.Map<List<OrderResponseDTO?>>(orders);
+        var responseOrders = mapper.Map<List<OrderResponseDTO?>>(orders);
+        foreach (var responseOrder in responseOrders)
+        {
+            if (responseOrder == null)
+                continue;
+            foreach (var orderItem in responseOrder.OrderItems)
+            {
+                var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductID);
+                if (product == null)
+                    continue;
+
+                mapper.Map<ProductDTO, OrderItemResponseDTO>(product, orderItem);
+            }
+        }
+        return responseOrders;
     }
 
     public async Task<OrderResponseDTO?> UpdateOrderAsync(OrderUpdateRequestDTO orderUpdateRequest)
     {
         if (orderUpdateRequest == null)
             throw new ArgumentNullException(nameof(orderUpdateRequest));
+        List<ProductDTO> products = new List<ProductDTO>();
 
         #region Validate orderUpdateRequest and its orderItems
         var validationResult = await orderUpdateRequestValidator.ValidateAsync(orderUpdateRequest);
@@ -138,6 +197,23 @@ public class OrdersService(IOrdersRepository ordersRepository,
         if (updatedOrder == null)
             return null;
 
-        return mapper.Map<OrderResponseDTO>(updatedOrder);
+        var updatedOrderResponse = mapper.Map<OrderResponseDTO>(updatedOrder); //Map updatedOrder ('Order' type) into 'OrderResponse' type (it invokes OrderToOrderResponseMappingProfile).
+
+
+        //TO DO: Load ProductName and Category in OrderItem
+        if (updatedOrderResponse != null)
+        {
+            foreach (var orderItemResponse in updatedOrderResponse.OrderItems)
+            {
+                ProductDTO? productDTO = products.Where(temp => temp.ProductID == orderItemResponse.ProductID).FirstOrDefault();
+
+                if (productDTO == null)
+                    continue;
+
+                mapper.Map<ProductDTO, OrderItemResponseDTO>(productDTO, orderItemResponse);
+            }
+        }
+
+        return updatedOrderResponse;
     }
 }
