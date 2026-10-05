@@ -2,9 +2,9 @@
 using BusinessLogicLayer.DTO;
 
 namespace BusinessLogicLayer.Mappers;
-public class ProductDTOtoProductItemResponse : Profile
+public class ProductDTOtoOrderItemResponseProfile : Profile
 {
-    public ProductDTOtoProductItemResponse()
+    public ProductDTOtoOrderItemResponseProfile()
     {
         CreateMap<ProductDTO, OrderItemResponseDTO>()
             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductName))
