@@ -70,6 +70,7 @@ public class OrdersService(IOrdersRepository ordersRepository,
         var addedOrderResponse = mapper.Map<OrderResponseDTO>(addedOrder);
         if (addedOrderResponse != null)
         {
+            mapper.Map<UserDTO, OrderResponseDTO>(user, addedOrderResponse);
             foreach (var orderItemResponse in addedOrderResponse.OrderItems)
             {
                 ProductDTO? productDTO = products.Where(temp => temp.ProductID == orderItemResponse.ProductID).FirstOrDefault();
@@ -97,6 +98,10 @@ public class OrdersService(IOrdersRepository ordersRepository,
 
         if (responseOrder != null)
         {
+            var user = await usersMicroserviceClient.GetUserByUserId(responseOrder.UserID);
+            if (user != null)
+                mapper.Map<UserDTO, OrderResponseDTO>(user, responseOrder);
+
             foreach (var orderItem in responseOrder.OrderItems)
             {
                 var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductID);
@@ -117,6 +122,10 @@ public class OrdersService(IOrdersRepository ordersRepository,
         {
             if (responseOrder == null)
                 continue;
+            var user = await usersMicroserviceClient.GetUserByUserId(responseOrder.UserID);
+            if (user != null)
+                mapper.Map<UserDTO, OrderResponseDTO>(user, responseOrder);
+
             foreach (var orderItem in responseOrder.OrderItems)
             {
                 var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductID);
@@ -137,6 +146,9 @@ public class OrdersService(IOrdersRepository ordersRepository,
         {
             if (responseOrder == null)
                 continue;
+            var user = await usersMicroserviceClient.GetUserByUserId(responseOrder.UserID);
+            if (user != null)
+                mapper.Map<UserDTO, OrderResponseDTO>(user, responseOrder);
             foreach (var orderItem in responseOrder.OrderItems)
             {
                 var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductID);
@@ -203,6 +215,7 @@ public class OrdersService(IOrdersRepository ordersRepository,
         //TO DO: Load ProductName and Category in OrderItem
         if (updatedOrderResponse != null)
         {
+            mapper.Map<UserDTO, OrderResponseDTO>(user, updatedOrderResponse);
             foreach (var orderItemResponse in updatedOrderResponse.OrderItems)
             {
                 ProductDTO? productDTO = products.Where(temp => temp.ProductID == orderItemResponse.ProductID).FirstOrDefault();
