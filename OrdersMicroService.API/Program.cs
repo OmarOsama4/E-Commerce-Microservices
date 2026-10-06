@@ -25,19 +25,7 @@ builder.Services.AddHttpClient<UsersMicroserviceClient>(client =>
 {
     return serviceProvider
         .GetRequiredService<IUsersMicroservicePolicies>()
-        .GetRetryPolicy();
-})
-.AddPolicyHandler((serviceProvider, request) =>
-{
-    return serviceProvider
-        .GetRequiredService<IUsersMicroservicePolicies>()
-        .GetCircuitBreakerPolicy();
-})
-.AddPolicyHandler((ServiceProvider, request) => 
-{
-    return ServiceProvider
-        .GetRequiredService<IUsersMicroservicePolicies>()
-        .GetTimeoutPolicy();
+        .GetCombinedPolicy();
 });
 
 
