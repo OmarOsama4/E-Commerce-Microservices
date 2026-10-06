@@ -19,7 +19,7 @@ public class UsersMicroserviceClient(HttpClient httpClient)
             }
             else
             {
-                throw new HttpRequestException($"Http request failed with status code {response.StatusCode}");
+                return new UserDTO(Guid.Empty, "Unavailable right now", "Unavailable right now", "Unavailable right now");
             }
         }
         return await response.Content.ReadFromJsonAsync<UserDTO>();
