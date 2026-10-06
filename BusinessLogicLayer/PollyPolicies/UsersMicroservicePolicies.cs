@@ -8,7 +8,7 @@ public class UsersMicroservicePolicies(ILogger<UsersMicroservicePolicies> logger
     public IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
     {
         AsyncRetryPolicy<HttpResponseMessage> policy =  Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
-        .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(1),
+        .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,retryAttempt)),
         onRetry: (outcome, timespan, retryAttempts, context) =>
         {
             //TO DO: Log the retry attempt and the reason for the failure
