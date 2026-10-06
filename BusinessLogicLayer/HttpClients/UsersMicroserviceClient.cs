@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.DTO;
 using Microsoft.Extensions.Logging;
 using Polly.CircuitBreaker;
+using Polly.Timeout;
 using System.Net.Http.Json;
 
 namespace BusinessLogicLayer.HttpClients;
@@ -29,9 +30,16 @@ public class UsersMicroserviceClient(HttpClient httpClient,
             }
             return await response.Content.ReadFromJsonAsync<UserDTO>();
         }
+
         catch (BrokenCircuitException ex)
         {
             logger.LogError(ex, "Circuit breaker is open. Users microservice is unavailable.");
+            return new UserDTO(Guid.Empty, "Unavailable right now", "Unavailable right now", "Unavailable right now");
+        }
+
+        catch (TimeoutRejectedException ex)
+        {
+            logger.LogError(ex, "Request to users microservice timed out.");
             return new UserDTO(Guid.Empty, "Unavailable right now", "Unavailable right now", "Unavailable right now");
         }
     }

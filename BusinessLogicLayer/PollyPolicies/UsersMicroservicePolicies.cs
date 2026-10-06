@@ -2,6 +2,7 @@
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Retry;
+using Polly.Timeout;
 
 namespace BusinessLogicLayer.PollyPolicies;
 public class UsersMicroservicePolicies(ILogger<UsersMicroservicePolicies> logger) : IUsersMicroservicePolicies
@@ -33,6 +34,12 @@ public class UsersMicroservicePolicies(ILogger<UsersMicroservicePolicies> logger
                 //TO DO: Log the circuit breaker state change
                 logger.LogInformation("Circuit breaker reset.");
             });
+        return policy;
+    }
+
+    public IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy()
+    {
+        AsyncTimeoutPolicy<HttpResponseMessage> policy = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(1500));
         return policy;
     }
 }
