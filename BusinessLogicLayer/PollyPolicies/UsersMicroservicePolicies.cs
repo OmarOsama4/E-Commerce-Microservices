@@ -12,6 +12,7 @@ public class UsersMicroservicePolicies(ILogger<UsersMicroservicePolicies> logger
         onRetry: (outcome, timespan, retryAttempts, context) =>
         {
             //TO DO: Log the retry attempt and the reason for the failure
+            logger.LogWarning($"Retry attempt {retryAttempts} after {timespan.TotalSeconds} seconds due to: {outcome.Result?.StatusCode}");
         });
 
         return policy;
