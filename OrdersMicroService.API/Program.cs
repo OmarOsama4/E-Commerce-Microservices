@@ -20,8 +20,19 @@ builder.Services.AddHttpClient<UsersMicroserviceClient>(client =>
 {
     client.BaseAddress = new Uri($"http://{builder.Configuration["UsersMicroserviceName"]}:" +
         $"{builder.Configuration["UsersMicroservicePort"]}");
-}).AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUsersMicroservicePolicies>().GetRetryPolicy())
-  .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUsersMicroservicePolicies>().GetCircuitBreakerPolicy());
+})
+.AddPolicyHandler((serviceProvider, request) =>
+{
+    return serviceProvider
+        .GetRequiredService<IUsersMicroservicePolicies>()
+        .GetRetryPolicy();
+})
+.AddPolicyHandler((serviceProvider, request) =>
+{
+    return serviceProvider
+        .GetRequiredService<IUsersMicroservicePolicies>()
+        .GetCircuitBreakerPolicy();
+});
 
 
 builder.Services.AddHttpClient<ProductsMicroserviceClient>(client =>
