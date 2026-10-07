@@ -31,6 +31,19 @@ public class ProductsMicroserviceClient(HttpClient httpClient, IDistributedCache
                 throw new HttpRequestException($"Http request failed with status code {response.StatusCode}");
             }
         }
-        return await response.Content.ReadFromJsonAsync<ProductDTO>();
+        var product = await response.Content.ReadFromJsonAsync<ProductDTO>();
+
+        #region Caching the product in redis
+        var productJson = JsonSerializer.Serialize(product);
+        var cacheKeyToWrite = $"product_{productID}";
+
+        DistributedCacheEntryOptions options = new DistributedCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(30))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(10));
+
+        await distributedCache.SetStringAsync(cacheKeyToWrite, productJson, options); 
+        #endregion
+
+        return product;
     }
 }
