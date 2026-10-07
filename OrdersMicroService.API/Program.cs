@@ -9,7 +9,7 @@ using Polly;
 var builder = WebApplication.CreateBuilder(args);
 
 #region DI Services
-builder.Services.AddBusinessLogicLayer();
+builder.Services.AddBusinessLogicLayer(builder.Configuration);
 builder.Services.AddDataAccessLayer(builder.Configuration);
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddControllers();
