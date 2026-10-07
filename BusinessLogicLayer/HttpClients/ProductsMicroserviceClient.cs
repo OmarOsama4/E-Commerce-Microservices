@@ -1,11 +1,20 @@
 ﻿using BusinessLogicLayer.DTO;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace BusinessLogicLayer.HttpClients;
-public class ProductsMicroserviceClient(HttpClient httpClient)
+public class ProductsMicroserviceClient(HttpClient httpClient, IDistributedCache distributedCache)
 {
     public async Task<ProductDTO?> GetProductByIdAsync(Guid productID)
     {
+        string cacheKey = $"Product_{productID}";
+        string? cacheProduct = await distributedCache.GetStringAsync(cacheKey);
+        if (cacheProduct != null)
+        {
+            return JsonSerializer.Deserialize<ProductDTO>(cacheProduct);
+        }
+
         var response = await httpClient.GetAsync($"/api/products/search/product-id/{productID}");
         if (!response.IsSuccessStatusCode)
         {
