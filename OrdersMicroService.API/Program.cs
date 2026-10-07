@@ -14,6 +14,7 @@ builder.Services.AddDataAccessLayer(builder.Configuration);
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddControllers();
 
+builder.Services.AddTransient<IPollyPolicies, PollyPolicies>();
 builder.Services.AddTransient<IUsersMicroservicePolicies, UsersMicroservicePolicies>();
 
 builder.Services.AddHttpClient<UsersMicroserviceClient>(client =>
