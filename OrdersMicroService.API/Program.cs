@@ -44,7 +44,7 @@ var app = builder.Build();
 app.UseExceptionHandlingMiddleware();
 app.UseRouting();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
