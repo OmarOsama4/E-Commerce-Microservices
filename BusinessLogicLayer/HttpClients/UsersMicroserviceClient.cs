@@ -8,9 +8,10 @@ using System.Text.Json;
 
 namespace BusinessLogicLayer.HttpClients;
 public class UsersMicroserviceClient(HttpClient httpClient,
-    ILogger<UsersMicroserviceClient> logger)
+    ILogger<UsersMicroserviceClient> logger,
+    IDistributedCache distributedCache)
 {
-    public async Task<UserDTO?> GetUserByUserId(Guid userId, IDistributedCache distributedCache)
+    public async Task<UserDTO?> GetUserByUserId(Guid userId)
     {
         try
         {
