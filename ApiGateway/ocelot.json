@@ -12,11 +12,171 @@
       "UpstreamHttpMethod": [
         "Get",
         "Post",
+        "Put",
         "Options"
+      ],
+      "UpStreamSchema": "http"
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/orders/search/orderid/{orderID}",
+      "DownstreamPathTemplate": "/api/orders/search/orderid/{orderID}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ordersmicroservice.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "UpStreamSchema": "http"
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/orders/search/orderdate/{orderDate}",
+      "DownstreamPathTemplate": "/api/orders/search/orderdate/{orderDate}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ordersmicroservice.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "UpStreamSchema": "http"
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/orders/search/productid/{productID}",
+      "DownstreamPathTemplate": "/api/orders/search/productid/{productID}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ordersmicroservice.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "UpStreamSchema": "http"
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/orders/{orderID}",
+      "DownstreamPathTemplate": "/api/orders/{orderID}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ordersmicroservice.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Delete",
+        "Others"
+      ],
+      "UpStreamSchema": "http"
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/products",
+      "DownstreamPathTemplate": "/api/products",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "products-microservice-container",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Options"
+      ],
+      "UpStreamSchema": "http"
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/products/search/product-id/{ProductID}",
+      "DownstreamPathTemplate": "/api/products/search/product-id/{ProductID}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "products-microservice-container",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "UpStreamSchema": "http"
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/products/{ProductID}",
+      "DownstreamPathTemplate": "/api/products",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "products-microservice-container",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Delete",
+        "Options"
+      ],
+      "UpStreamSchema": "http"
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/auth/login",
+      "DownstreamPathTemplate": "/api/auth/login",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "users-microservice-container",
+          "Port": 9090
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Post",
+        "Options"
+      ],
+      "UpStreamSchema": "http"
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/auth/register",
+      "DownstreamPathTemplate": "/api/auth/register",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "users-microservice-container",
+          "Port": 9090
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Post",
+        "Options"
+      ],
+      "UpStreamSchema": "http"
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/users/{userid}",
+      "DownstreamPathTemplate": "/api/users/{userid}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "users-microservice-container",
+          "Port": 9090
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Get"
       ],
       "UpStreamSchema": "http"
     }
   ],
+
+
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:4500"
   }
