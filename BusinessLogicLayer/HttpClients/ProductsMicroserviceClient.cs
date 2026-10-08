@@ -15,7 +15,7 @@ public class ProductsMicroserviceClient(HttpClient httpClient, IDistributedCache
             return JsonSerializer.Deserialize<ProductDTO>(cacheProduct);
         }
 
-        var response = await httpClient.GetAsync($"/api/products/search/product-id/{productID}");
+        var response = await httpClient.GetAsync($"/gateway/products/search/product-id/{productID}");
         if (!response.IsSuccessStatusCode)
         {
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)

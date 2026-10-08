@@ -21,7 +21,7 @@ public class UsersMicroserviceClient(HttpClient httpClient,
             if (cacheValue is not null)
                 return JsonSerializer.Deserialize<UserDTO>(cacheValue);
 
-            var response = await httpClient.GetAsync($"/api/users/{userId}");
+            var response = await httpClient.GetAsync($"/gateway/users/{userId}");
             if (!response.IsSuccessStatusCode)
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
