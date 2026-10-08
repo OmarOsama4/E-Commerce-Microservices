@@ -106,6 +106,16 @@ services:
     networks:
       - ecommerce-network
 
+  apigateway-container:
+    image: apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    ports:
+      - "4000:8080"    
+     
+        
+
 networks:
   orders-mongodb-network:
     driver: bridge
