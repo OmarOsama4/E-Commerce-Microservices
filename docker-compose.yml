@@ -112,7 +112,9 @@ services:
       context: .
       dockerfile: ApiGateway/Dockerfile
     ports:
-      - "4000:8080"    
+      - "4500:8080"    
+    networks:
+      - ecommerce-network
      
         
 
