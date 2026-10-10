@@ -38,7 +38,12 @@ public class ProductService(IProductRepository productRepository,
 
     public async Task<bool> DeleteProductAsync(Guid productId)
     {
-        return await productRepository.DeleteProduct(productId);
+        var isDeleted = await productRepository.DeleteProduct(productId);
+        if (isDeleted)
+        {
+            await publisher.Publish("product.delete", new { ProductID = productId});
+        }
+        return isDeleted;
     }
 
     public async Task<ProductResponseDTO?> GetProductByConditionAsync(Expression<Func<Product, bool>> condition)
