@@ -43,17 +43,18 @@ public class RabbitMQPublisher : IRabbitMQPublisher, IDisposable
         await InitializeConnectionAsync();
         string messageJson = JsonSerializer.Serialize(message);
         var messageInBytes = Encoding.UTF8.GetBytes(messageJson);
+        var exchangeName = _configuration["RabbitMQ_Products_Exchange"];
 
         //Create Exchange 
         await _channel!.ExchangeDeclareAsync(
-            exchange: "products.exchange",
+            exchange: exchangeName!,
             type: ExchangeType.Direct,
             durable: true
             );
 
         //Publish Message
         await _channel!.BasicPublishAsync(
-            exchange: "products.exchange",
+            exchange: exchangeName!,
             routingKey: routingKey,
             body: messageInBytes
             );
