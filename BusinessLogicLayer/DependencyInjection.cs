@@ -26,6 +26,8 @@ public static class DependencyInjection
         services.AddScoped<IOrdersService, OrdersService>();
         services.AddTransient<IRabbitMQProductUpdateNameConsumer, RabbitMQProductUpdateNameConsumer>();
         services.AddHostedService<RabbitMQProductUpdateHostedService>();
+        services.AddTransient<IRabbitMQProductDeletionConsumer, RabbitMQProductDeletionConsumer>();
+        services.AddHostedService<RabbitMQProductDeletionHostedService>();
         return services;
     }
 }
