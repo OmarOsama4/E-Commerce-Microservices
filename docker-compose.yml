@@ -19,6 +19,7 @@ services:
       - RabbitMQ_UserName=user
       - RabbitMQ_Password=password
       - RabbitMQ_Port=5672
+      - RabbitMQ_Products_Exchange=products.exchange  
     ports:
       - "7100:8080"
     networks:
@@ -69,6 +70,7 @@ services:
       - RabbitMQ_UserName=user
       - RabbitMQ_Password=password
       - RabbitMQ_Port=5672 
+      - RabbitMQ_Products_Exchange=products.exchange 
     depends_on:
       - mysql-container
 
@@ -120,7 +122,7 @@ services:
       context: .
       dockerfile: ApiGateway/Dockerfile
     ports:
-      - "4500:8080"    
+      - "4501:8080"    
     networks:
       - ecommerce-network
       
