@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.DTO;
+using BusinessLogicLayer.RabbitMQ;
 using BusinessLogicLayer.ServiceContract;
 using DataAccessLayer.Contracts;
 using DataAccessLayer.Entities;
@@ -10,7 +11,8 @@ namespace BusinessLogicLayer.ServiceImplementation;
 public class ProductService(IProductRepository productRepository,
     IMapper mapper,
     IValidator<ProductAddRequestDTO> productAddRequestValidator,
-    IValidator<ProductUpdateRequestDTO> productUpdateRequestValidator) : IProductService
+    IValidator<ProductUpdateRequestDTO> productUpdateRequestValidator,
+    IRabbitMQPublisher publisher) : IProductService
 {
     public async Task<ProductResponseDTO?> AddProductAsync(ProductAddRequestDTO productAddRequest)
     {
@@ -62,18 +64,27 @@ public class ProductService(IProductRepository productRepository,
 
     public async Task<ProductResponseDTO?> UpdateProductAsync(ProductUpdateRequestDTO productUpdateRequest)
     {
-        if (productUpdateRequest == null)
-        {
-            throw new ArgumentNullException(nameof(productUpdateRequest));
-        }
+        var existingProduct = await productRepository.GetProductByCondition(temp => temp.ProductID == productUpdateRequest.ProductID);
+        if (existingProduct == null)
+            throw new ArgumentException("Invalid Product ID");
+
         var validationResult = await productUpdateRequestValidator.ValidateAsync(productUpdateRequest);
         if (!validationResult.IsValid)
         {
             var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
             throw new ArgumentException(errors);
         }
+
+        var isProductNameChanged = productUpdateRequest.ProductName != existingProduct.ProductName;
+
         var product = await productRepository.UpdateProduct(mapper.Map<Product>(productUpdateRequest));
 
-        return product == null ? null : mapper.Map<ProductResponseDTO>(product);
+        if (isProductNameChanged)
+        {
+            var message = new {ProductID = product!.ProductID, NewName = product.ProductName};
+            await publisher.Publish("product.update.name", message);
+        }
+
+        return mapper.Map<ProductResponseDTO?>(product);
     }
 }
