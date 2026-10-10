@@ -114,7 +114,7 @@
 
     {
       "UpstreamPathTemplate": "/gateway/products/{ProductID}",
-      "DownstreamPathTemplate": "/api/products",
+      "DownstreamPathTemplate": "/api/products/{ProductID}",
       "DownstreamHostAndPorts": [
         {
           "Host": "products-microservice-container",
