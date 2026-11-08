@@ -228,6 +228,12 @@ See `OrdersService/ApiGateway/ocelot.json` for the complete gateway route config
 - Make Docker Compose configuration portable and separate development from production settings.
 - Add a CI/CD workflow with GitHub Actions.
 
+## Acknowledgment
+
+This project was originally developed while following the **E-Commerce Microservices** course by [Web Academy by Harsha Vardhan](https://www.udemy.com/user/harsha-vardhan-28/) on Udemy.
+
+I use this repository as a learning project to study the implementation of microservices concepts with .NET, understand the underlying architecture, and continue improving the code through independent exploration and enhancements.
+
 ## Author
 
 **Omar Osama**
